@@ -125,6 +125,31 @@ li:hover {
 	text-align: center;
 	margin-bottom: 1em;
 }
+/* les filtres */
+.filter{
+	display: flex;
+	margin: 51px 0;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+.filter__button{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: #1D6154;
+	background-color: #FFFEF8;
+	text-align: center;
+	border-radius: 60px;
+	border: 1px solid #1D6154;
+	font-size: 16px;
+	padding: 9px 15px;
+	transition: 0.5s;
+	cursor: pointer;
+}
+.filter__button:hover {
+	color: #fff;
+	background-color: #1D6154;
+}
 .gallery {
 	width: 100%;
 	display: grid;

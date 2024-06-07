@@ -30,6 +30,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	background-color: #FFFEF8;
 }
 ol, ul {
 	list-style: none;
@@ -211,3 +212,61 @@ footer nav ul {
 	margin: 2em
 }
 
+/* Bouton login */
+.log {
+	text-decoration: none;
+	outline: none;
+}
+.log:visited {
+	color: black;
+}
+.log:hover {
+	color: #B1663C;
+}
+
+/* login */
+.login {
+	text-align: center;
+	width: 50%;
+	margin: 15em auto;
+}
+
+.login p {
+	margin-top: -10px;
+	text-decoration: underline;
+}
+
+.login h2{
+	margin-bottom: 20px;
+}
+.login form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+.login input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+.login label {
+	margin: 2em 0 1em 0;
+}
+
+.btn:hover {
+	opacity: 0.8;
+	cursor: pointer;
+}
+
+#loginStatus {
+	position: absolute;
+	color: red;
+	text-decoration: none !important;
+}
+
+.logweight {
+	font-weight: bold;
+}

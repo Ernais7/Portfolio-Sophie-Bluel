@@ -1,4 +1,4 @@
-function login() {
+function project() {
   const apiUrl = "http://localhost:5678/api/works";
 
   fetch(apiUrl)
@@ -32,13 +32,13 @@ function displayImages(data) {
 
       figure.appendChild(img);
       figure.appendChild(figCaption);
-      figure.classList.add('photo');
+      figure.classList.add('project');
       figure.classList.add(`category-${item.category.id}`); // Ajouter la catégorie en tant que classe
 
       projectGallery.appendChild(figure);
   });
 
-  filterPhotos('all'); // Afficher toutes les photos par défaut
+  filterProject('all');
 }
 
 function filter() {
@@ -71,28 +71,41 @@ function displayFilter(data) {
   const buttonAll = document.createElement("button");
   buttonAll.innerText = "Tous";
   buttonAll.classList.add("filter__button");
-  buttonAll.addEventListener('click', () => filterPhotos('all'));
+  buttonAll.addEventListener('click', () => filterProject('all'));
   divFilter.appendChild(buttonAll);
 
   data.forEach(item => {
       const buttonFilter = document.createElement("button");
       buttonFilter.textContent = item.name;
       buttonFilter.classList.add("filter__button");
-      buttonFilter.addEventListener('click', () => filterPhotos(`category-${item.id}`));
+      buttonFilter.addEventListener('click', () => filterProject(`category-${item.id}`));
       divFilter.appendChild(buttonFilter);
   });
 }
 
-function filterPhotos(category) {
-  const allPhotos = document.querySelectorAll('.photo');
-  allPhotos.forEach(photo => {
-      if (category === 'all' || photo.classList.contains(category)) {
-          photo.style.display = 'block';
+function filterProject(category) {
+  const allProject = document.querySelectorAll('.project');
+  allProject.forEach(project => {
+      if (category === 'all' || project.classList.contains(category)) {
+          project.style.display = 'block';
       } else {
-          photo.style.display = 'none';
+          project.style.display = 'none';
       }
   });
 }
 
-login();
+project();
 filter();
+
+// Condition si le token est présent
+const logOut = document.querySelector('.log');
+if (localStorage.getItem("token")){
+    logOut.textContent = 'logout';
+}
+// Suppression du token pour se déconnecter
+logOut.addEventListener('click', function(event) {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'login.html';
+})
+

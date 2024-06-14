@@ -6,12 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
         const loginStatus = document.getElementById('loginStatus');
         login(email, password, loginStatus);
-        // if (email === validEmail && password === validPassword) {
-        //     window.location.href = 'index.html';
-        // } else {
-        //     loginStatus.textContent = 'E-mail ou mot de passe incorrect';
-        //     loginStatus.style.color = 'red';
-        // }
     });
 });
 

@@ -522,13 +522,14 @@ footer nav ul {
 }
 
 #file-preview {
-  width: 80px;
+  width: 129px;
 }
 
 .imageMiniature {
-  background-color: rgb(235 235 235);
+  background-color: #E8F1F6;
   display: none;
   justify-content: center;
+  height: 190px;
 }
 
 .uploading {
@@ -591,3 +592,4 @@ footer nav ul {
 .notValid{
   background-color: #A7A7A7;
 }
+

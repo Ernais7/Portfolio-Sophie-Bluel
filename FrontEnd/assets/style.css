@@ -462,7 +462,7 @@ footer nav ul {
   width: 420px;
   margin: 0 auto;
 }
-.addProject {
+.addProject, .validProject {
   display: flex;
   height: 50px;
   font-size: 1.2em;
@@ -475,6 +475,9 @@ footer nav ul {
   margin: 2em auto;
   border-radius: 60px;
   cursor: pointer;
+}
+.notValid{
+  background-color: #A7A7A7;
 }
 
 
@@ -589,7 +592,11 @@ footer nav ul {
   display: none;
 }
 
-.notValid{
-  background-color: #A7A7A7;
+#logStatus{
+  display: flex;
+  justify-content: center;
+  position: relative;
+  bottom: 20px;
 }
+
 

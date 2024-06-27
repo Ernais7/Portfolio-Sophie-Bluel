@@ -9,7 +9,8 @@ const bouttonModal = document.querySelector(".edit");
 const modal = document.querySelector(".modal");
 const closeModal = document.querySelector(".fa-xmark");
 modal.style.display = "none";
-const bouttonAjouter = document.querySelector(".addProject");
+const bouttonAjouter = document.querySelector(".validProject");
+const ajouterPhoto = document.querySelector(".addProject");
 const firstModal = document.querySelector(".modal__content--view1");
 const secondModal = document.querySelector(".modal__content--view2");
 const titreModal = document.getElementById("modalTitle");
@@ -47,7 +48,6 @@ function project() {
 }
 
 function displayImages(data) {
-  
   projectGallery.innerHTML = ""; // Vider le conteneur
 
   data.forEach((item) => {
@@ -70,30 +70,23 @@ function displayImages(data) {
   filterProject("all");
 }
 
-function filter() {
+async function fetchCategories() {
   const apiUrl = "http://localhost:5678/api/categories";
 
-  fetch(apiUrl)
+  return fetch(apiUrl)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Erreur de réseau - " + response.status);
       }
       return response.json();
     })
-    .then((data) => {
-      console.log(data);
-      // displayFilter(data);
-      // category = data;
-      return data;
-    })
     .catch((error) => {
       console.error("Erreur lors de la récupération des données :", error);
     });
 }
-// Creation de la div 'filter'
-console.log(filter());
-async function displayFilter() {
-  const data = await filter();
+
+// Création de la div 'filter'
+function displayFilter(data) {
   section.insertBefore(divFilter, h2.nextSibling);
 
   const buttonAll = document.createElement("button");
@@ -122,8 +115,24 @@ function filterProject(category) {
   });
 }
 
+function populateCategoriesSelect(categories) {
+  const selectElement = document.getElementById("modalCategoryImage");
+
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.id; // Valeur de l'option (id de la catégorie)
+    option.textContent = category.name; // Texte affiché dans l'option
+    selectElement.appendChild(option); // Ajouter l'option au select
+  });
+}
+
 project();
-filter();
+
+fetchCategories().then((data) => {
+  category = data;
+  displayFilter(data);
+  populateCategoriesSelect(data);
+});
 
 // Condition si le token est présent
 if (localStorage.getItem("token")) {
@@ -186,7 +195,7 @@ function imageModal(data) {
 }
 
 bouttonModal.addEventListener("click", afficherModal);
-bouttonAjouter.addEventListener("click", deuxiemeModal);
+ajouterPhoto.addEventListener("click", deuxiemeModal);
 flecheReturn.addEventListener("click", flecheModal);
 closeModal.addEventListener("click", fermerModal);
 
@@ -195,23 +204,25 @@ function afficherModal() {
   firstModal.style.display = "flex";
   secondModal.style.display = "none";
   titreModal.textContent = "Galerie photo";
-  bouttonAjouter.value = "Ajouter une photo";
-  bouttonAjouter.classList.remove("notValid");
+  bouttonAjouter.style.display = "none";
   flecheReturn.style.display = "none";
   iconsModal.style.display = "block";
+  ajouterPhoto.style.display = 'flex';
 }
 
 function fermerModal() {
   modal.style.display = "none";
 }
+
 function deuxiemeModal() {
   firstModal.style.display = "none";
   secondModal.style.display = "flex";
-  bouttonAjouter.value = "Valider";
+  bouttonAjouter.style.display = "flex";
   titreModal.textContent = "Ajout photo";
   flecheReturn.style.display = "flex";
   iconsModal.style.display = "flex";
   bouttonAjouter.classList.add("notValid");
+  ajouterPhoto.style.display = "none";
 }
 
 function flecheModal() {
@@ -220,8 +231,8 @@ function flecheModal() {
   flecheReturn.style.display = "none";
   iconsModal.style.display = "block";
   titreModal.textContent = "Galerie photo";
-  bouttonAjouter.value = "Ajouter une photo";
-  bouttonAjouter.classList.remove("notValid");
+  ajouterPhoto.style.display = "flex";
+  bouttonAjouter.style.display = "none";
 }
 
 // Suppression de projet
@@ -290,56 +301,63 @@ miniature();
 // Ajout projet
 
 function ajoutProjet() {
-  const form = document.querySelector('.modal__content--view2');
-  const formBtn = document.querySelector('.addProject');
+  const formBtn = document.querySelector(".validProject");
+  const inputFieldsForm = document.querySelectorAll('.modal__content--view2 input, .modal__content--view2 select');
 
-  formBtn.addEventListener('click', async function(event) {
-      event.preventDefault();
+  inputFieldsForm.forEach(field => {
+    field.addEventListener('input', () => {
+      const isFormValid = Array.from(inputFieldsForm).every(field => field.value.trim() !== ''); 
 
-      const token = localStorage.getItem('token');
-      const photo = document.getElementById('imageUrl').files[0];
-      const title = document.querySelector('input[name="title"]').value;
-      const category = document.querySelector('select[name="category.name"]').value;
-      
-      try {
-          const formData = new FormData(secondModal);
-          console.log(secondModal);
-          console.log(formData.get('title'));
-          console.log(formData.get('image'));
-
-
-          const response = await fetch('http://localhost:5678/api/works', {
-              method: 'POST',
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-              body: formData,
-          });
-
-          if (response.ok) {
-              form.reset();
-              firstModal.style.display = 'flex';
-              project();
-              return;
-          }
-
-      } catch (error) {
-          console.error('Erreur lors de la requête : ', error);
+      if (isFormValid) {
+        formBtn.style.backgroundColor = '#1D6154'; 
+        formBtn.style.color = 'white'; 
+      } else {
+        formBtn.style.backgroundColor = ''; 
+        formBtn.style.color = ''; 
       }
+    });
+  });
+
+  formBtn.addEventListener("click", async function (event) {
+    event.preventDefault();
+
+    const token = localStorage.getItem("token");
+    const photo = document.getElementById("imageUrl").files[0];
+    const title = document.querySelector('input[name="title"]').value;
+    const category = document.querySelector('select[name="category"]').value;
+    const loginStatus = document.getElementById('logStatus');
+    
+    if (!photo || !title || !category) {
+      loginStatus.textContent = 'Veuillez remplir tous les champs';
+      loginStatus.style.color = 'red';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', photo);
+    formData.append('title', title);
+    formData.append('category', category);
+
+    try {
+      const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('Projet ajouté avec succès');
+        form.reset();
+        firstModal.style.display = "flex";
+        secondModal.style.display = "none";
+        project();
+      }
+    } catch (error) {
+      console.error("Erreur lors de la requête : ", error);
+    }
   });
 }
+
 ajoutProjet();
-
-
-console.log(category);
-function populateCategoriesSelect(categories) {
-  const selectElement = document.getElementById('modalCategoryImage');
-
-  categories.forEach(category => {
-      const option = document.createElement('option');
-      option.value = category.id; // Valeur de l'option (id de la catégorie)
-      option.textContent = category.name; // Texte affiché dans l'option
-      selectElement.appendChild(option); // Ajouter l'option au select
-  });
-}
-populateCategoriesSelect(category);

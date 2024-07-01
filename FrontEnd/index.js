@@ -8,7 +8,6 @@ const classEdit = document.querySelector(".edit");
 const bouttonModal = document.querySelector(".edit");
 const modal = document.querySelector(".modal");
 const closeModal = document.querySelector(".fa-xmark");
-modal.style.display = "none";
 const bouttonAjouter = document.querySelector(".validProject");
 const ajouterPhoto = document.querySelector(".addProject");
 const firstModal = document.querySelector(".modal__content--view1");
@@ -22,8 +21,11 @@ const preview = document.querySelector(".imageMiniature");
 const uploadingDiv = document.querySelector(".uploading");
 const imageUrlupload = document.getElementById("imageUrl");
 const projectGallery = document.querySelector(".gallery");
+const errorMessage = document.getElementById("errorMessage");
+const loginStatus = document.getElementById("logStatus");
+const titleReset = document.querySelector('input[name="title"]');
 let category = [];
-
+modal.style.display = "none";
 // Pointeur sur le bouton 'modifier'
 bouttonModal.style.cursor = "pointer";
 
@@ -198,6 +200,17 @@ bouttonModal.addEventListener("click", afficherModal);
 ajouterPhoto.addEventListener("click", deuxiemeModal);
 flecheReturn.addEventListener("click", flecheModal);
 closeModal.addEventListener("click", fermerModal);
+window.addEventListener("click", clickAutour);
+
+function clickAutour() {
+  if (event.target == modal) {
+    modal.style.display = "none";
+    loginStatus.style.display = "none";
+    errorMessage.style.display = "none";
+    titleReset.value = "";
+    bouttonAjouter.style.backgroundColor = '#A7A7A7';
+  }
+}
 
 function afficherModal() {
   modal.style.display = "flex";
@@ -207,14 +220,20 @@ function afficherModal() {
   bouttonAjouter.style.display = "none";
   flecheReturn.style.display = "none";
   iconsModal.style.display = "block";
-  ajouterPhoto.style.display = 'flex';
+  ajouterPhoto.style.display = "flex";
 }
 
 function fermerModal() {
   modal.style.display = "none";
+  loginStatus.style.display = "none";
+  errorMessage.style.display = "none";
+  titleReset.value = "";
+  bouttonAjouter.style.backgroundColor = '#A7A7A7';
 }
 
 function deuxiemeModal() {
+  uploadingDiv.style.display = "flex";
+  preview.style.display = "none";
   firstModal.style.display = "none";
   secondModal.style.display = "flex";
   bouttonAjouter.style.display = "flex";
@@ -233,6 +252,10 @@ function flecheModal() {
   titreModal.textContent = "Galerie photo";
   ajouterPhoto.style.display = "flex";
   bouttonAjouter.style.display = "none";
+  loginStatus.style.display = "none";
+  errorMessage.style.display = "none";
+  titleReset.value = "";
+  bouttonAjouter.style.backgroundColor = '#A7A7A7';
 }
 
 // Suppression de projet
@@ -290,10 +313,8 @@ function miniature() {
   imageUrlupload.addEventListener("change", previewPhoto);
 
   imageUrlupload.addEventListener("click", function () {
-    const imageMiniature = document.querySelector(".imageMiniature");
-    const uploadingDiv = document.querySelector(".uploading");
     uploadingDiv.style.display = "none";
-    imageMiniature.style.display = "flex";
+    preview.style.display = "flex";
   });
 }
 miniature();
@@ -302,18 +323,18 @@ miniature();
 
 function ajoutProjet() {
   const formBtn = document.querySelector(".validProject");
-  const inputFieldsForm = document.querySelectorAll('.modal__content--view2 input, .modal__content--view2 select');
+  const inputFieldsForm = document.querySelectorAll(".modal__content--view2 input, .modal__content--view2 select");
 
-  inputFieldsForm.forEach(field => {
-    field.addEventListener('input', () => {
-      const isFormValid = Array.from(inputFieldsForm).every(field => field.value.trim() !== ''); 
+  inputFieldsForm.forEach((field) => {
+    field.addEventListener("input", () => {
+      const isFormValid = Array.from(inputFieldsForm).every((field) => field.value.trim() !== "");
 
       if (isFormValid) {
-        formBtn.style.backgroundColor = '#1D6154'; 
-        formBtn.style.color = 'white'; 
+        formBtn.style.backgroundColor = "#1D6154";
+        formBtn.style.color = "white";
       } else {
-        formBtn.style.backgroundColor = ''; 
-        formBtn.style.color = ''; 
+        formBtn.style.backgroundColor = "";
+        formBtn.style.color = "";
       }
     });
   });
@@ -325,18 +346,20 @@ function ajoutProjet() {
     const photo = document.getElementById("imageUrl").files[0];
     const title = document.querySelector('input[name="title"]').value;
     const category = document.querySelector('select[name="category"]').value;
-    const loginStatus = document.getElementById('logStatus');
-    
+
+    const form = document.getElementById("formulaire");
+
     if (!photo || !title || !category) {
-      loginStatus.textContent = 'Veuillez remplir tous les champs';
-      loginStatus.style.color = 'red';
+      loginStatus.style.display = "flex";
+      loginStatus.textContent = "Veuillez remplir tous les champs";
+      loginStatus.style.color = "red";
       return;
     }
 
     const formData = new FormData();
-    formData.append('image', photo);
-    formData.append('title', title);
-    formData.append('category', category);
+    formData.append("image", photo);
+    formData.append("title", title);
+    formData.append("category", category);
 
     try {
       const response = await fetch("http://localhost:5678/api/works", {
@@ -348,10 +371,15 @@ function ajoutProjet() {
       });
 
       if (response.ok) {
-        console.log('Projet ajouté avec succès');
+        console.log("Projet ajouté avec succès");
         form.reset();
         firstModal.style.display = "flex";
         secondModal.style.display = "none";
+        flecheReturn.style.display = "none";
+        iconsModal.style.display = "block";
+        titreModal.textContent = "Galerie photo";
+        ajouterPhoto.style.display = "flex";
+        bouttonAjouter.style.display = "none";
         project();
       }
     } catch (error) {
@@ -361,3 +389,20 @@ function ajoutProjet() {
 }
 
 ajoutProjet();
+
+//Verif taille de l'image
+imageUrlupload.addEventListener("change", verif);
+
+function verif() {
+  const file = fileInput.files[0];
+
+  if (file) {
+    if (file.size > 4 * 1024 * 1024) {
+      // 4 Mo en octets
+      errorMessage.style.display = "flex";
+      imageUrlupload.value = "";
+    } else {
+      errorMessage.style.display = "none";
+    }
+  }
+}

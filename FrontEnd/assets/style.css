@@ -349,6 +349,12 @@ footer nav ul {
   text-decoration: none !important;
 }
 
+#errorMessage{
+  color: red;
+  display: none;
+  justify-content: center;
+}
+
 .logweight {
   font-weight: bold;
 }
@@ -391,7 +397,7 @@ footer nav ul {
   position: fixed;
   align-items: center;
   justify-content: center;
-  top: 0;
+  top: -50px;
   left: 0;
   width: 100%;
   height: 100%;
@@ -400,7 +406,6 @@ footer nav ul {
 .modal__content {
   overflow: hidden;
   width: 630px;
-  height: 688px;
   max-width: calc(100vw - 20px);
   max-height: calc(100vh - 20px);
   padding: 20px;

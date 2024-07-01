@@ -38,7 +38,7 @@
       </section>
 
       <!-- Modale -->
-      <aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="modalTitle">
+      <section id="modal1" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="modalTitle">
         <div class="modal__content">
           <div class="icon__contain">
             <span class="return"><i class="fa-solid fa-arrow-left"></i></span>
@@ -49,25 +49,29 @@
             <div class="modal__content--project"></div>
           </div>
           <!-- Modale 2 -->
-          <form class="modal__content--view2">
+          <form class="modal__content--view2" id="formulaire">
             <div class="uploading">
               <div class="mountainIcon"><i class="fa-regular fa-image"></i></div>
               <label for="imageUrl" class="AddPicture ImgUpload">+ Ajouter photo</label>
               <input type="file" id="imageUrl" name="image" accept="image/jpeg, image/png" class="ImgUploadBtn formField" />
               <label for="imageUrl" class="imgIndication">jpg, png : 4mo max</label>
             </div>
+
             <div class="imageMiniature"><img src="#" alt="" id="file-preview" /></div>
+            <p id="errorMessage">L'image ne doit pas dépasser 4 Mo.</p>
+
             <label class="modalCategoryTitle">Titre</label>
             <input type="text" name="title" class="ModalAddProjectTitleCase formField" />
             <label for="modalCategoryImage" class="modalCategoryCategory">Catégorie</label>
             <select name="category" id="modalCategoryImage" class="formField"></select>
             <p id="logStatus"></p>
           </form>
+
           <div class="bar"></div>
           <input class="addProject" type="button" value="Ajouter une photo" />
           <input class="validProject" type="button" value="Valider" />
         </div>
-      </aside>
+      </section>
       <section id="portfolio">
         <h2>
           Mes Projets <span class="edit"><i class="fa-regular fa-pen-to-square"></i> modifier</span>
